@@ -1,6 +1,6 @@
 function Detail({ title, dot, items, empty }) {
   return (
-    <div className="rounded-md border border-neutral-800 bg-neutral-900">
+    <div className=" border border-neutral-800 bg-neutral-900">
       <div className="flex items-center gap-2 border-b border-neutral-800 px-4 py-2.5">
         <span className={`h-1.5 w-1.5 rounded-full ${dot}`} />
         <h3 className="text-xs font-medium uppercase tracking-wider text-neutral-400">

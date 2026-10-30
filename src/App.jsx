@@ -62,14 +62,14 @@ export default function Comparator() {
   }, [pathsRaw, summaryRaw]);
 
   return (
-    <div className="min-h-screen bg-neutral-950 p-6 text-neutral-200">
+    <div className="min-h-screen bg-neutral-950 p-6 text-neutral-200 place-content-center">
       <div className="mx-auto max-w-6xl space-y-8">
         {/* Inputs */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <Field label="File paths" hint="Windows “Copy as path”">
             <textarea
               rows={12}
-              className="w-full resize-none rounded-md border border-neutral-800 bg-neutral-900 p-3 font-mono text-xs text-neutral-300 placeholder-neutral-600 focus:border-neutral-600 focus:outline-none"
+              className="w-full resize-none  border border-neutral-800 bg-neutral-900 p-3 font-mono text-xs text-neutral-300 placeholder-neutral-600 focus:border-neutral-600 focus:outline-none"
               value={pathsRaw}
               onChange={(e) => setPathsRaw(e.target.value)}
               placeholder={
@@ -80,7 +80,7 @@ export default function Comparator() {
           <Field label="Discharge Summary" hint="SURNAME, FIRST MIDDLE">
             <textarea
               rows={12}
-              className="w-full resize-none rounded-md border border-neutral-800 bg-neutral-900 p-3 font-mono text-xs text-neutral-300 placeholder-neutral-600 focus:border-neutral-600 focus:outline-none"
+              className="w-full resize-none  border border-neutral-800 bg-neutral-900 p-3 font-mono text-xs text-neutral-300 placeholder-neutral-600 focus:border-neutral-600 focus:outline-none"
               value={summaryRaw}
               onChange={(e) => setSummaryRaw(e.target.value)}
               placeholder={"SANTOS, FLORDELIZA MAE BONIFACIO"}
@@ -110,7 +110,7 @@ export default function Comparator() {
         {/* Detail lists */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Detail
-            title="Summary only"
+            title="In Discharge Summary Only"
             dot="bg-rose-500"
             items={result.summaryOnly.map((s) => ({
               key: s.key,
@@ -119,7 +119,7 @@ export default function Comparator() {
             empty="Every summary entry has a matching file."
           />
           <Detail
-            title="Files only"
+            title="In Downloaded Folder only"
             dot="bg-amber-500"
             items={result.filesOnly.map((f) => ({
               key: f.key,
