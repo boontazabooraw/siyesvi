@@ -18,13 +18,22 @@ const filenameFromPath = (p) =>
     .replace(/\.csv$/i, "")
     .trim();
 
-const normalize = (s) =>
-  s
-    .toLowerCase()
-    .replace(/\s+/g, " ")
-    .replace(/\s*,\s*/g, ", ")
-    .replace(/\s*\.\s*$/g, " .") // trailing dot placeholder → " ."
-    .trim();
+const toKey = (name) => {
+  const clean = name.toLowerCase().replace(/\s+/g, " ").trim();
+
+  // Expect "surname, first ..." — split on first comma
+  const commaIdx = clean.indexOf(",");
+  if (commaIdx === -1) return clean; // no comma → compare whole string
+
+  const surname = clean.slice(0, commaIdx).trim();
+  const given =
+    clean
+      .slice(commaIdx + 1)
+      .trim()
+      .split(" ")[0] || "";
+
+  return `${surname}, ${given}`;
+};
 
 export default function Comparator() {
   const [pathsRaw, setPathsRaw] = useState("");
@@ -34,12 +43,12 @@ export default function Comparator() {
     const files = parseLines(pathsRaw).map((raw) => {
       const path = cleanPath(raw);
       const name = filenameFromPath(path);
-      return { path, name, key: normalize(name) };
+      return { path, name, key: toKey(name) };
     });
 
     const summary = parseLines(summaryRaw).map((raw) => {
       const name = raw.replace(/^"+|"+$/g, "").trim();
-      return { name, key: normalize(name) };
+      return { name, key: toKey(name) };
     });
 
     const fileKeyMap = new Map(files.map((f) => [f.key, f]));
