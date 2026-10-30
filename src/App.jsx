@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
-import StatCard from "./components/StatCard";
-import DetailPanel from "./components/DetailPanel";
+import Stat from "./components/Stat";
+import Detail from "./components/Detail";
+import Field from "./components/Field";
 
 const parseLines = (raw) =>
   raw
@@ -61,116 +62,72 @@ export default function Comparator() {
   }, [pathsRaw, summaryRaw]);
 
   return (
-    <div className="grid grid-rows-2 grid-cols-2 gap-5 h-screen items-center p-5">
-      <div className="border">
-        <label>Paste file paths (Windows “Copy as path”, one per line):</label>
-        <textarea
-          rows={14}
-          className="w-full resize-none"
-          value={pathsRaw}
-          onChange={(e) => setPathsRaw(e.target.value)}
-          placeholder={
-            '"Z:\\# CSV\\11 NOV\\NOVEMBER 1\\santos, flordeliza mae bonifacio.csv"'
-          }
-        />
-      </div>
-      <div className="border">
-        <label>Paste Discharge Summary names (SURNAME, FIRST MIDDLE):</label>
-        <textarea
-          rows={14}
-          className="w-full resize-none"
-          value={summaryRaw}
-          onChange={(e) => setSummaryRaw(e.target.value)}
-          placeholder={"SANTOS, FLORDELIZA MAE BONIFACIO"}
-        />
-      </div>
+    <div className="min-h-screen bg-neutral-950 p-6 text-neutral-200">
+      <div className="mx-auto max-w-6xl space-y-8">
+        {/* Inputs */}
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <Field label="File paths" hint="Windows “Copy as path”">
+            <textarea
+              rows={12}
+              className="w-full resize-none rounded-md border border-neutral-800 bg-neutral-900 p-3 font-mono text-xs text-neutral-300 placeholder-neutral-600 focus:border-neutral-600 focus:outline-none"
+              value={pathsRaw}
+              onChange={(e) => setPathsRaw(e.target.value)}
+              placeholder={
+                '"Z:\\# CSV\\11 NOV\\NOVEMBER 1\\santos, flordeliza mae bonifacio.csv"'
+              }
+            />
+          </Field>
+          <Field label="Discharge Summary" hint="SURNAME, FIRST MIDDLE">
+            <textarea
+              rows={12}
+              className="w-full resize-none rounded-md border border-neutral-800 bg-neutral-900 p-3 font-mono text-xs text-neutral-300 placeholder-neutral-600 focus:border-neutral-600 focus:outline-none"
+              value={summaryRaw}
+              onChange={(e) => setSummaryRaw(e.target.value)}
+              placeholder={"SANTOS, FLORDELIZA MAE BONIFACIO"}
+            />
+          </Field>
+        </div>
 
-      <div className="border col-span-2 h-full content-center overflow-auto">
-        <div className="min-h-screen bg-slate-50 p-6">
-          <div className="mx-auto max-w-6xl space-y-6">
-            {/* Inputs */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div>
-                <label className="mb-1 block text-sm font-medium text-slate-700">
-                  File paths{" "}
-                  <span className="text-slate-400">
-                    (Windows “Copy as path”)
-                  </span>
-                </label>
-                <textarea
-                  rows={12}
-                  className="w-full rounded-lg border border-slate-300 bg-white p-3 font-mono text-xs text-slate-800 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
-                  value={pathsRaw}
-                  onChange={(e) => setPathsRaw(e.target.value)}
-                  placeholder={
-                    '"Z:\\# CSV\\11 NOV\\NOVEMBER 1\\santos, flordeliza mae bonifacio.csv"'
-                  }
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-sm font-medium text-slate-700">
-                  Discharge Summary{" "}
-                  <span className="text-slate-400">
-                    (SURNAME, FIRST MIDDLE)
-                  </span>
-                </label>
-                <textarea
-                  rows={12}
-                  className="w-full rounded-lg border border-slate-300 bg-white p-3 font-mono text-xs text-slate-800 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
-                  value={summaryRaw}
-                  onChange={(e) => setSummaryRaw(e.target.value)}
-                  placeholder={"SANTOS, FLORDELIZA MAE BONIFACIO"}
-                />
-              </div>
-            </div>
+        {/* Stat row */}
+        <div className="grid grid-cols-3 gap-4">
+          <Stat
+            label="In both"
+            value={result.inBoth.length}
+            dot="bg-emerald-500"
+          />
+          <Stat
+            label="Summary only"
+            value={result.summaryOnly.length}
+            dot="bg-rose-500"
+          />
+          <Stat
+            label="Files only"
+            value={result.filesOnly.length}
+            dot="bg-amber-500"
+          />
+        </div>
 
-            {/* Stat cards */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              <StatCard
-                label="In both"
-                value={result.inBoth.length}
-                tone="emerald"
-                icon="✅"
-              />
-              <StatCard
-                label="Summary only"
-                value={result.summaryOnly.length}
-                tone="rose"
-                icon="❌"
-              />
-              <StatCard
-                label="Files only"
-                value={result.filesOnly.length}
-                tone="amber"
-                icon="📁"
-              />
-            </div>
-
-            {/* Detail panels */}
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-              <DetailPanel
-                title="In Discharge Summary but no matching file"
-                icon="❌"
-                tone="rose"
-                items={result.summaryOnly.map((s) => ({
-                  key: s.key,
-                  label: s.name,
-                }))}
-                emptyText="Every summary entry has a matching file."
-              />
-              <DetailPanel
-                title="File exists but not in Discharge Summary"
-                icon="📁"
-                tone="amber"
-                items={result.filesOnly.map((f) => ({
-                  key: f.key,
-                  label: f.name,
-                  title: f.path,
-                }))}
-                emptyText="Every file is accounted for in the summary."
-              />
-            </div>
-          </div>
+        {/* Detail lists */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <Detail
+            title="Summary only"
+            dot="bg-rose-500"
+            items={result.summaryOnly.map((s) => ({
+              key: s.key,
+              label: s.name,
+            }))}
+            empty="Every summary entry has a matching file."
+          />
+          <Detail
+            title="Files only"
+            dot="bg-amber-500"
+            items={result.filesOnly.map((f) => ({
+              key: f.key,
+              label: f.name,
+              title: f.path,
+            }))}
+            empty="Every file is accounted for."
+          />
         </div>
       </div>
     </div>
