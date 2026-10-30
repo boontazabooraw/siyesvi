@@ -59,12 +59,12 @@ export default function Comparator() {
   }, [pathsRaw, summaryRaw]);
 
   return (
-    <div className="grid gap-5">
-      <div className="">
+    <div className="grid grid-rows-2 grid-cols-2 gap-5 h-screen items-center p-5">
+      <div className="border">
         <label>Paste file paths (Windows “Copy as path”, one per line):</label>
         <textarea
           rows={14}
-          style={{ width: "100%", fontFamily: "monospace" }}
+          className="w-full resize-none"
           value={pathsRaw}
           onChange={(e) => setPathsRaw(e.target.value)}
           placeholder={
@@ -72,19 +72,18 @@ export default function Comparator() {
           }
         />
       </div>
-      <div className="">
+      <div className="border">
         <label>Paste Discharge Summary names (SURNAME, FIRST MIDDLE):</label>
         <textarea
           rows={14}
-          style={{ width: "100%", fontFamily: "monospace" }}
+          className="w-full resize-none"
           value={summaryRaw}
           onChange={(e) => setSummaryRaw(e.target.value)}
           placeholder={"SANTOS, FLORDELIZA MAE BONIFACIO"}
         />
       </div>
 
-      <div className="col-span-2 row-span-2">
-        <h4>Summary</h4>
+      <div className="border col-span-2 h-full content-center overflow-auto">
         <p>
           ✅ In both: {result.inBoth.length} · ❌ Summary only:{" "}
           {result.summaryOnly.length} · 📁 Files only: {result.filesOnly.length}
