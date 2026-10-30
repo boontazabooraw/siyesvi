@@ -1,4 +1,6 @@
 import { useState, useMemo } from "react";
+import StatCard from "./components/StatCard";
+import DetailPanel from "./components/DetailPanel";
 
 const parseLines = (raw) =>
   raw
@@ -84,34 +86,92 @@ export default function Comparator() {
       </div>
 
       <div className="border col-span-2 h-full content-center overflow-auto">
-        <p>
-          ✅ In both: {result.inBoth.length} · ❌ Summary only:{" "}
-          {result.summaryOnly.length} · 📁 Files only: {result.filesOnly.length}
-        </p>
+        <div className="min-h-screen bg-slate-50 p-6">
+          <div className="mx-auto max-w-6xl space-y-6">
+            {/* Inputs */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-slate-700">
+                  File paths{" "}
+                  <span className="text-slate-400">
+                    (Windows “Copy as path”)
+                  </span>
+                </label>
+                <textarea
+                  rows={12}
+                  className="w-full rounded-lg border border-slate-300 bg-white p-3 font-mono text-xs text-slate-800 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+                  value={pathsRaw}
+                  onChange={(e) => setPathsRaw(e.target.value)}
+                  placeholder={
+                    '"Z:\\# CSV\\11 NOV\\NOVEMBER 1\\santos, flordeliza mae bonifacio.csv"'
+                  }
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium text-slate-700">
+                  Discharge Summary{" "}
+                  <span className="text-slate-400">
+                    (SURNAME, FIRST MIDDLE)
+                  </span>
+                </label>
+                <textarea
+                  rows={12}
+                  className="w-full rounded-lg border border-slate-300 bg-white p-3 font-mono text-xs text-slate-800 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+                  value={summaryRaw}
+                  onChange={(e) => setSummaryRaw(e.target.value)}
+                  placeholder={"SANTOS, FLORDELIZA MAE BONIFACIO"}
+                />
+              </div>
+            </div>
 
-        {result.summaryOnly.length > 0 && (
-          <>
-            <h5>❌ In Discharge Summary but no matching file</h5>
-            <ul>
-              {result.summaryOnly.map((s, i) => (
-                <li key={i}>{s.name}</li>
-              ))}
-            </ul>
-          </>
-        )}
+            {/* Stat cards */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <StatCard
+                label="In both"
+                value={result.inBoth.length}
+                tone="emerald"
+                icon="✅"
+              />
+              <StatCard
+                label="Summary only"
+                value={result.summaryOnly.length}
+                tone="rose"
+                icon="❌"
+              />
+              <StatCard
+                label="Files only"
+                value={result.filesOnly.length}
+                tone="amber"
+                icon="📁"
+              />
+            </div>
 
-        {result.filesOnly.length > 0 && (
-          <>
-            <h5>📁 File exists but not in Discharge Summary</h5>
-            <ul>
-              {result.filesOnly.map((f, i) => (
-                <li key={i}>
-                  {f.name} <em style={{ color: "#888" }}>({f.path})</em>
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
+            {/* Detail panels */}
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              <DetailPanel
+                title="In Discharge Summary but no matching file"
+                icon="❌"
+                tone="rose"
+                items={result.summaryOnly.map((s) => ({
+                  key: s.key,
+                  label: s.name,
+                }))}
+                emptyText="Every summary entry has a matching file."
+              />
+              <DetailPanel
+                title="File exists but not in Discharge Summary"
+                icon="📁"
+                tone="amber"
+                items={result.filesOnly.map((f) => ({
+                  key: f.key,
+                  label: f.name,
+                  title: f.path,
+                }))}
+                emptyText="Every file is accounted for in the summary."
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
