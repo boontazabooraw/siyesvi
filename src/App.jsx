@@ -23,6 +23,7 @@ const normalize = (s) =>
     .toLowerCase()
     .replace(/\s+/g, " ")
     .replace(/\s*,\s*/g, ", ")
+    .replace(/\s*\.\s*$/g, " .") // trailing dot placeholder → " ."
     .trim();
 
 export default function Comparator() {
